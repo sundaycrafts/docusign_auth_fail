@@ -177,5 +177,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # specified project
-cert/private.pem
-cert/public.pem
+cert/*
+!cert/.gitkeep
+!cert/*.sample.*
