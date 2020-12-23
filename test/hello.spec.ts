@@ -1,6 +1,3 @@
-import * as dotenv from "dotenv";
-
-dotenv.config();
 import { hello } from "./hello";
 import axios from "axios";
 
