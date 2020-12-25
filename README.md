@@ -4,7 +4,7 @@
 2. "ADD APP & INTEGRATION KEY" from [Apps and keys](https://admindemo.docusign.com/api-integrator-key)
    in [Admin page of Docusign eSignature](https://admindemo.docusign.com/) > Settings
 3. Enter edit screen for the app and add "Redirect URIs" by arbitrary, RSA Keypairs (no need prepare yourself) and store
-   it into <./cert/private.pem> / <./cert/public.pem> (see *.sample.pem what expected)
+   it into [cert/private.pem](cert/private.pem) / [cert/public.pem](cert/public.pem) (see *.sample.pem what expected)
 4. Fill .env entries copied from sample.env by the app information.
 
 # Getting Started
