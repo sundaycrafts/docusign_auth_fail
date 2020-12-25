@@ -7,7 +7,7 @@ import axios from "axios";
 
 export class ApplicationAuth {
   private jwt: string;
-  scope = constants.admin_scope;
+  scope = constants.scope;
   private accessToken: string;
 
   step1() {
@@ -68,7 +68,7 @@ export class ApplicationAuth {
     }
   }
 
-  async step3_1() {
+  async step3() {
     this.printStep("Step 3: Call the DocuSign Admin API");
 
     let response: {
