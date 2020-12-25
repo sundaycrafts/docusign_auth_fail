@@ -40,47 +40,59 @@ export class AuthcodeGetToken {
   async step2() {
     this.printStep("Step 2. Obtain the access token");
 
-    const { data } = (await axios({
-      method: "post",
-      url:
-        "https://account-d.docusign.com/oauth/token?" +
-        qs.stringify({
-          grant_type: "authorization_code",
-          code: process.env.AUTHORIZETAION_CODE,
-        }),
-      auth: {
-        username: process.env.INTEGRATION_KEY,
-        password: process.env.SECRET_KEY,
-      }
-    })) as {
+    let response: {
       data: {
         access_token: string;
         token_type: "Bearer";
         refresh_token: string;
         expires_in: number;
       };
-    };
+    }
+    try {
+      response = (await axios({
+        method: "post",
+        url:
+          "https://account-d.docusign.com/oauth/token?" +
+          qs.stringify({
+            grant_type: "authorization_code",
+            code: process.env.AUTHORIZETAION_CODE,
+          }),
+        auth: {
+          username: process.env.INTEGRATION_KEY,
+          password: process.env.SECRET_KEY,
+        }
+      }));
+    } catch (e) {
+      console.log(e.response?.data || e)
+      throw e
+    }
 
-    this.accessToken = data.access_token;
-    this.refreshToken = data.refresh_token;
+    this.accessToken = response.data.access_token;
+    this.refreshToken = response.data.refresh_token;
 
-    return data;
+    return response.data;
   }
 
   async step3() {
     this.printStep(`Step 3. Get your user's base URI`);
 
-    const { data } = (await axios({
-      method: "get",
-      url: "https://account-d.docusign.com/oauth/userinfo",
-      headers: {
-        Authorization: `Bearer ${this.accessToken}`,
-      },
-    })) as {
-      data: UserInfo;
-    };
+    let response: {
+      data: UserInfo
+    }
+    try {
+      response = (await axios({
+        method: "get",
+        url: "https://account-d.docusign.com/oauth/userinfo",
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      }));
+    } catch (e) {
+      console.log(e.response?.data || e)
+      throw e
+    }
 
-    const defaultAccount = data.accounts.find(({ is_default }) => is_default);
+    const defaultAccount = response.data.accounts.find(({ is_default }) => is_default);
 
     this.baseUri = defaultAccount.base_uri;
     this.accountId = defaultAccount.account_id;
@@ -90,33 +102,50 @@ export class AuthcodeGetToken {
 
   async step4() {
     this.printStep("Step 4. Use the access token to make an API call");
-    const { data } = await axios({
-      method: "get",
-      url: `${this.baseUri}/restapi/v2/accounts/${this.accountId}/brands`,
-      headers: {
-        Authorization: `Bearer ${this.accessToken}`,
-      },
-    });
 
-    return data;
+    let response: {
+      data: unknown
+    }
+    try {
+      response = await axios({
+        method: "get",
+        url: `${this.baseUri}/restapi/v2/accounts/${this.accountId}/brands`,
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      });
+    } catch (e) {
+      console.log(e.response?.data || e)
+      throw e
+    }
+
+    return response.data;
   }
 
   async useRefreshToken() {
     this.printStep("Use refresh tokens");
 
-    const itgKeyAndSctKey = `${process.env.INTEGRATION_KEY}:${process.env.SECRET_KEY}`;
+    let response: {
+      data: unknown
+    }
+    try {
+      response = await axios({
+        method: "post",
+        url: "https://account-d.docusign.com/oauth/token?" + qs.stringify({
+          grant_type: 'refresh_token',
+          refresh_token: this.refreshToken,
+        }),
+        auth: {
+          username: process.env.INTEGRATION_KEY,
+          password: process.env.SECRET_KEY,
+        }
+      });
+    } catch (e) {
+      console.log(e.response?.data || e)
+      throw e
+    }
 
-    await axios({
-      method: "post",
-      url: "https://account-d.docusign.com/oauth/token?" + qs.stringify({
-        grant_type: 'refresh_token',
-        refresh_token: this.refreshToken,
-      }),
-      auth: {
-        username: process.env.INTEGRATION_KEY,
-        password: process.env.SECRET_KEY,
-      }
-    });
+    return response.data
   }
 
   private printStep(description: string) {

@@ -8,16 +8,8 @@ describe("https://developers.docusign.com/platform/auth/authcode/authcode-get-to
   });
 
   test(
-    "Step 1. Request the authorization code" +
-      "(access printed url, " +
-      'obtain "AUTHORIZETAION_CODE" from redirected url param,' +
-      " write it to .env manually to go to next steps)",
+    "Step 1. Request the authorization code",
     async () => {
-      if (process.env.AUTHORIZETAION_CODE) {
-        console.log('SKIPPED')
-        return
-      }
-
       const requestUri = await authcodeGetoToken.step1();
 
       console.log(requestUri);
