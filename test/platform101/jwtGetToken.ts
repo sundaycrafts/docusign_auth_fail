@@ -3,8 +3,8 @@ import * as qs from "qs"; // https://www.npmjs.com/package/qs
 import * as moment from "moment"; // https://www.npmjs.com/package/moment
 import * as fs from "fs"; // https://nodejs.org/api/fs.html
 import axios from "axios";
-import { AccountInfo } from "./accountInfo";
 import { constants } from "./constants";
+import {AccountInfo, Brands} from "./apiResponses";
 
 export class JwtGetToken {
   scope = constants.scope;
@@ -12,8 +12,6 @@ export class JwtGetToken {
   private accessToken: string;
   private baseUri: string;
   private accountId: string;
-
-  constructor() {}
 
   // available scopes: https://developers.docusign.com/platform/auth/reference/scopes/
   step1(): string {
@@ -32,7 +30,7 @@ export class JwtGetToken {
          */
         state: "prevent csrf",
         scope: this.scope,
-        client_id: process.env.API_ACCOUNT_ID,
+        client_id: process.env.INTEGRATION_KEY,
         redirect_uri: process.env.REDIRECT_URI,
       });
 
@@ -128,7 +126,7 @@ export class JwtGetToken {
       },
     });
 
-    return data;
+    return data as Brands;
   }
 
   private printStep(description: string) {

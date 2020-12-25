@@ -1,4 +1,5 @@
 import { JwtGetToken } from "./jwtGetToken";
+import { constants } from "./constants";
 
 describe("https://developers.docusign.com/platform/auth/jwt/jwt-get-token/", () => {
   let jwtGetToken: JwtGetToken;
@@ -10,7 +11,7 @@ describe("https://developers.docusign.com/platform/auth/jwt/jwt-get-token/", () 
   test("Step 1. Request application consent", () => {
     const uri = jwtGetToken.step1();
 
-    const { API_ACCOUNT_ID, REDIRECT_URI } = process.env;
+    const { INTEGRATION_KEY, REDIRECT_URI } = process.env;
 
     console.log(uri);
 
@@ -18,8 +19,8 @@ describe("https://developers.docusign.com/platform/auth/jwt/jwt-get-token/", () 
       "https://account-d.docusign.com/oauth/auth" +
         "?response_type=code" +
         "&state=prevent%20csrf" +
-        "&scope=signature" +
-        `&client_id=${API_ACCOUNT_ID}` +
+        `&scope=${encodeURIComponent(constants.scope)}` +
+        `&client_id=${INTEGRATION_KEY}` +
         `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`
     );
   });
@@ -63,11 +64,20 @@ describe("https://developers.docusign.com/platform/auth/jwt/jwt-get-token/", () 
     expect(defaultAccount).toHaveProperty("account_id");
   });
 
-  xtest("Step 5. Use the access token to make an API call", async () => {
+  test("Step 5. Use the access token to make an API call", async () => {
     const data = await jwtGetToken.step5();
 
-    console.log(`?????`);
+    console.log(data);
 
-    expect(data).toBeTruthy();
+    expect(data.senderBrandIdDefault).toEqual(expect.any(String));
+    data.brands.forEach((b) =>
+      expect(b).toMatchObject({
+        brandId: expect.any(String),
+        brandName: expect.any(String),
+        isOverridingCompanyName: expect.any(String),
+        isSendingDefault: expect.any(String),
+        isSigningDefault: expect.any(String),
+      })
+    );
   });
 });

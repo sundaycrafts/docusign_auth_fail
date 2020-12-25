@@ -1,8 +1,7 @@
 import axios from "axios";
 import qs = require("qs");
-import { AccountInfo } from "./accountInfo";
 import {constants} from "./constants";
-import {UserInfo} from "./userInfo";
+import {AccountInfo, UserInfo} from "./apiResponses";
 
 export class AuthcodeGetToken {
   private readonly scope = constants.scope;

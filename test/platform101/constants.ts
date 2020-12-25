@@ -1,3 +1,3 @@
 export const constants = {
-  scope: "signature"
+  scope: "signature impersonation" // signature scope always needs impersonation
 };
