@@ -4,7 +4,7 @@ import * as moment from "moment"; // https://www.npmjs.com/package/moment
 import * as fs from "fs"; // https://nodejs.org/api/fs.html
 import axios from "axios";
 import { constants } from "./constants";
-import {AccountInfo, Brands} from "./apiResponses";
+import { AccountInfo, Brands } from "./apiResponses";
 
 export class JwtGetToken {
   scope = constants.scope;
@@ -62,19 +62,17 @@ export class JwtGetToken {
   async step3() {
     this.printStep("Step 3. Obtain the access token");
 
-    const data1 = qs.stringify(
-      {
-        grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-        assertion: this.jwt,
-      },
-      { encode: false }
-    );
-
     try {
       const { data } = (await axios({
         method: "post",
         url: "https://account-d.docusign.com/oauth/token",
-        data: data1,
+        data: qs.stringify(
+          {
+            grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            assertion: this.jwt,
+          },
+          { encode: false }
+        ),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
@@ -90,8 +88,8 @@ export class JwtGetToken {
 
       return data;
     } catch (e) {
-      console.log(e.response?.data || e)
-      throw e
+      console.log(e.response?.data || e);
+      throw e;
     }
   }
 
