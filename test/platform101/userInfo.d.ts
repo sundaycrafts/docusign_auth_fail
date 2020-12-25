@@ -1,10 +1,16 @@
 export type UserInfo = {
-  accounts: [
-    {
-      account_id: string;
-      is_default: boolean;
-      account_name: string;
-      base_uri: string;
-    }
-  ];
-};
+  userName: string
+  userId: string
+  userType: string
+  isAdmin: string
+  userStatus: string
+  uri: string
+  email: string
+  createdDateTime: string
+  firstName: string
+  lastName: string
+  jobTitle: string
+  company: string
+  permissionProfileId: string
+  permissionProfileName: string
+}

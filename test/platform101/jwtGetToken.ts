@@ -3,7 +3,7 @@ import * as qs from "qs"; // https://www.npmjs.com/package/qs
 import * as moment from "moment"; // https://www.npmjs.com/package/moment
 import * as fs from "fs"; // https://nodejs.org/api/fs.html
 import axios from "axios";
-import { UserInfo } from "./userInfo";
+import { AccountInfo } from "./accountInfo";
 import { constants } from "./constants";
 
 export class JwtGetToken {
@@ -107,7 +107,7 @@ export class JwtGetToken {
         Authorization: `Bearer ${this.accessToken}`,
       },
     })) as {
-      data: UserInfo;
+      data: AccountInfo;
     };
 
     const defaultAccount = data.accounts.find(({ is_default }) => is_default);

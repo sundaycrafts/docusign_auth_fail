@@ -1,7 +1,8 @@
 import axios from "axios";
 import qs = require("qs");
-import { UserInfo } from "./userInfo";
+import { AccountInfo } from "./accountInfo";
 import {constants} from "./constants";
+import {UserInfo} from "./userInfo";
 
 export class AuthcodeGetToken {
   private readonly scope = constants.scope;
@@ -77,7 +78,7 @@ export class AuthcodeGetToken {
     this.printStep(`Step 3. Get your user's base URI`);
 
     let response: {
-      data: UserInfo
+      data: AccountInfo
     }
     try {
       response = (await axios({
@@ -104,12 +105,14 @@ export class AuthcodeGetToken {
     this.printStep("Step 4. Use the access token to make an API call");
 
     let response: {
-      data: unknown
+      data: {
+        users: UserInfo[]
+      }
     }
     try {
       response = await axios({
         method: "get",
-        url: `${this.baseUri}/restapi/v2/accounts/${this.accountId}/brands`,
+        url: `${this.baseUri}/restapi/v2.1/accounts/${this.accountId}/users`,
         headers: {
           Authorization: `Bearer ${this.accessToken}`,
         },
